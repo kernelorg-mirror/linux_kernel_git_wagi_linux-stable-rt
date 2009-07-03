@@ -61,6 +61,7 @@
 #include <linux/hugetlb.h>
 #include <linux/sched/rt.h>
 #include <linux/sched/mm.h>
+#include <linux/locallock.h>
 #include <linux/page_owner.h>
 #include <linux/kthread.h>
 #include <linux/memcontrol.h>
@@ -355,6 +356,18 @@ unsigned int nr_node_ids __read_mostly = MAX_NUMNODES;
 unsigned int nr_online_nodes __read_mostly = 1;
 EXPORT_SYMBOL(nr_node_ids);
 EXPORT_SYMBOL(nr_online_nodes);
+#endif
+
+static DEFINE_LOCAL_IRQ_LOCK(pa_lock);
+
+#ifdef CONFIG_PREEMPT_RT_BASE
+# define cpu_lock_irqsave(cpu, flags)		\
+	local_lock_irqsave_on(pa_lock, flags, cpu)
+# define cpu_unlock_irqrestore(cpu, flags)	\
+	local_unlock_irqrestore_on(pa_lock, flags, cpu)
+#else
+# define cpu_lock_irqsave(cpu, flags)		local_irq_save(flags)
+# define cpu_unlock_irqrestore(cpu, flags)	local_irq_restore(flags)
 #endif
 
 int page_group_by_mobility_disabled __read_mostly;
@@ -1449,10 +1462,10 @@ static void __free_pages_ok(struct page *page, unsigned int order)
 		return;
 
 	migratetype = get_pfnblock_migratetype(page, pfn);
-	local_irq_save(flags);
+	local_lock_irqsave(pa_lock, flags);
 	__count_vm_events(PGFREE, 1 << order);
 	free_one_page(page_zone(page), page, pfn, order, migratetype);
-	local_irq_restore(flags);
+	local_unlock_irqrestore(pa_lock, flags);
 }
 
 void __free_pages_core(struct page *page, unsigned int order)
@@ -2822,13 +2835,13 @@ void drain_zone_pages(struct zone *zone, struct per_cpu_pages *pcp)
 	int to_drain, batch;
 	LIST_HEAD(dst);
 
-	local_irq_save(flags);
+	local_lock_irqsave(pa_lock, flags);
 	batch = READ_ONCE(pcp->batch);
 	to_drain = min(pcp->count, batch);
 	if (to_drain > 0)
 		isolate_pcp_pages(to_drain, pcp, &dst);
 
-	local_irq_restore(flags);
+	local_unlock_irqrestore(pa_lock, flags);
 
 	if (to_drain > 0)
 		free_pcppages_bulk(zone, &dst, false);
@@ -2850,7 +2863,7 @@ static void drain_pages_zone(unsigned int cpu, struct zone *zone)
 	LIST_HEAD(dst);
 	int count;
 
-	local_irq_save(flags);
+	cpu_lock_irqsave(cpu, flags);
 	pset = per_cpu_ptr(zone->pageset, cpu);
 
 	pcp = &pset->pcp;
@@ -2858,7 +2871,7 @@ static void drain_pages_zone(unsigned int cpu, struct zone *zone)
 	if (count)
 		isolate_pcp_pages(count, pcp, &dst);
 
-	local_irq_restore(flags);
+	cpu_unlock_irqrestore(cpu, flags);
 
 	if (count)
 		free_pcppages_bulk(zone, &dst, false);
@@ -2896,6 +2909,7 @@ void drain_local_pages(struct zone *zone)
 		drain_pages(cpu);
 }
 
+#ifndef CONFIG_PREEMPT_RT_BASE
 static void drain_local_pages_wq(struct work_struct *work)
 {
 	struct pcpu_drain *drain;
@@ -2913,6 +2927,7 @@ static void drain_local_pages_wq(struct work_struct *work)
 	drain_local_pages(drain->zone);
 	preempt_enable();
 }
+#endif
 
 /*
  * Spill all the per-cpu pages from all CPUs back into the buddy allocator.
@@ -2980,6 +2995,14 @@ void drain_all_pages(struct zone *zone)
 			cpumask_clear_cpu(cpu, &cpus_with_pcps);
 	}
 
+#ifdef CONFIG_PREEMPT_RT_BASE
+	for_each_cpu(cpu, &cpus_with_pcps) {
+		if (zone)
+			drain_pages_zone(cpu, zone);
+		else
+			drain_pages(cpu);
+	}
+#else
 	for_each_cpu(cpu, &cpus_with_pcps) {
 		struct pcpu_drain *drain = per_cpu_ptr(&pcpu_drain, cpu);
 
@@ -2989,6 +3012,7 @@ void drain_all_pages(struct zone *zone)
 	}
 	for_each_cpu(cpu, &cpus_with_pcps)
 		flush_work(&per_cpu_ptr(&pcpu_drain, cpu)->work);
+#endif
 
 	mutex_unlock(&pcpu_drain_mutex);
 }
@@ -3108,9 +3132,9 @@ void free_unref_page(struct page *page)
 	if (!free_unref_page_prepare(page, pfn))
 		return;
 
-	local_irq_save(flags);
+	local_lock_irqsave(pa_lock, flags);
 	free_unref_page_commit(page, pfn, &dst);
-	local_irq_restore(flags);
+	local_unlock_irqrestore(pa_lock, flags);
 	if (!list_empty(&dst))
 		free_pcppages_bulk(zone, &dst, false);
 }
@@ -3137,7 +3161,7 @@ void free_unref_page_list(struct list_head *list)
 		set_page_private(page, pfn);
 	}
 
-	local_irq_save(flags);
+	local_lock_irqsave(pa_lock, flags);
 	list_for_each_entry_safe(page, next, list, lru) {
 		unsigned long pfn = page_private(page);
 		enum zone_type type;
@@ -3152,12 +3176,12 @@ void free_unref_page_list(struct list_head *list)
 		 * a large list of pages to free.
 		 */
 		if (++batch_count == SWAP_CLUSTER_MAX) {
-			local_irq_restore(flags);
+			local_unlock_irqrestore(pa_lock, flags);
 			batch_count = 0;
-			local_irq_save(flags);
+			local_lock_irqsave(pa_lock, flags);
 		}
 	}
-	local_irq_restore(flags);
+	local_unlock_irqrestore(pa_lock, flags);
 
 	for (i = 0; i < __MAX_NR_ZONES; ) {
 		struct page *page;
@@ -3307,7 +3331,7 @@ static struct page *rmqueue_pcplist(struct zone *preferred_zone,
 	struct page *page;
 	unsigned long flags;
 
-	local_irq_save(flags);
+	local_lock_irqsave(pa_lock, flags);
 	pcp = &this_cpu_ptr(zone->pageset)->pcp;
 	list = &pcp->lists[migratetype];
 	page = __rmqueue_pcplist(zone,  migratetype, alloc_flags, pcp, list);
@@ -3315,7 +3339,7 @@ static struct page *rmqueue_pcplist(struct zone *preferred_zone,
 		__count_zid_vm_events(PGALLOC, page_zonenum(page), 1);
 		zone_statistics(preferred_zone, zone);
 	}
-	local_irq_restore(flags);
+	local_unlock_irqrestore(pa_lock, flags);
 	return page;
 }
 
@@ -3342,7 +3366,7 @@ struct page *rmqueue(struct zone *preferred_zone,
 	 * allocate greater than order-1 page units with __GFP_NOFAIL.
 	 */
 	WARN_ON_ONCE((gfp_flags & __GFP_NOFAIL) && (order > 1));
-	spin_lock_irqsave(&zone->lock, flags);
+	local_spin_lock_irqsave(pa_lock, &zone->lock, flags);
 
 	do {
 		page = NULL;
@@ -3362,7 +3386,7 @@ struct page *rmqueue(struct zone *preferred_zone,
 
 	__count_zid_vm_events(PGALLOC, page_zonenum(page), 1 << order);
 	zone_statistics(preferred_zone, zone);
-	local_irq_restore(flags);
+	local_unlock_irqrestore(pa_lock, flags);
 
 out:
 	/* Separate test+clear to avoid unnecessary atomics */
@@ -3375,7 +3399,7 @@ out:
 	return page;
 
 failed:
-	local_irq_restore(flags);
+	local_unlock_irqrestore(pa_lock, flags);
 	return NULL;
 }
 
@@ -8570,7 +8594,7 @@ void zone_pcp_reset(struct zone *zone)
 	struct per_cpu_pageset *pset;
 
 	/* avoid races with drain_pages()  */
-	local_irq_save(flags);
+	local_lock_irqsave(pa_lock, flags);
 	if (zone->pageset != &boot_pageset) {
 		for_each_online_cpu(cpu) {
 			pset = per_cpu_ptr(zone->pageset, cpu);
@@ -8579,7 +8603,7 @@ void zone_pcp_reset(struct zone *zone)
 		free_percpu(zone->pageset);
 		zone->pageset = &boot_pageset;
 	}
-	local_irq_restore(flags);
+	local_unlock_irqrestore(pa_lock, flags);
 }
 
 #ifdef CONFIG_MEMORY_HOTREMOVE
