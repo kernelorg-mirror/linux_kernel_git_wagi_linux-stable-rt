@@ -230,9 +230,7 @@ static bool i915_request_retire(struct i915_request *rq)
 		active->retire(active, rq);
 	}
 
-	local_irq_disable();
-
-	spin_lock(&rq->engine->active.lock);
+	spin_lock_irq(&rq->engine->active.lock);
 	list_del(&rq->sched.link);
 	spin_unlock(&rq->engine->active.lock);
 
@@ -246,9 +244,7 @@ static bool i915_request_retire(struct i915_request *rq)
 		GEM_BUG_ON(!atomic_read(&rq->i915->gt_pm.rps.num_waiters));
 		atomic_dec(&rq->i915->gt_pm.rps.num_waiters);
 	}
-	spin_unlock(&rq->lock);
-
-	local_irq_enable();
+	spin_unlock_irq(&rq->lock);
 
 	intel_context_exit(rq->hw_context);
 	intel_context_unpin(rq->hw_context);
