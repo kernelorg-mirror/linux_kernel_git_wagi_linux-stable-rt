@@ -1091,11 +1091,11 @@ retry:
 	 * Even if it fails we do not really care about that. Just proceed
 	 * as it is. "overflow" path will refill the cache we allocate from.
 	 */
-	preempt_disable();
+	migrate_disable();
 	if (!__this_cpu_read(ne_fit_preload_node)) {
-		preempt_enable();
+		migrate_enable();
 		pva = kmem_cache_alloc_node(vmap_area_cachep, GFP_KERNEL, node);
-		preempt_disable();
+		migrate_disable();
 
 		if (__this_cpu_cmpxchg(ne_fit_preload_node, NULL, pva)) {
 			if (pva)
@@ -1104,7 +1104,7 @@ retry:
 	}
 
 	spin_lock(&vmap_area_lock);
-	preempt_enable();
+	migrate_enable();
 
 	/*
 	 * If an allocation fails, the "vend" address is
