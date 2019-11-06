@@ -259,7 +259,7 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
  		if (!x->done)
  			return timeout;
  	}
-@@ -100,9 +100,9 @@ __wait_for_common(struct completion *x,
+@@ -100,9 +100,9 @@ static inline long __sched
  
  	complete_acquire(x);
  

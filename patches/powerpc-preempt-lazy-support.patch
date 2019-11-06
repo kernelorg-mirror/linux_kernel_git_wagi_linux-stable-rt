@@ -91,7 +91,7 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
  	OFFSET(DCACHEL1BLOCKSIZE, ppc64_caches, l1d.block_size);
 --- a/arch/powerpc/kernel/entry_32.S
 +++ b/arch/powerpc/kernel/entry_32.S
-@@ -400,7 +400,9 @@ ret_from_syscall:
+@@ -400,7 +400,9 @@
  	MTMSRD(r10)
  	lwz	r9,TI_FLAGS(r2)
  	li	r8,-MAX_ERRNO
@@ -102,7 +102,7 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
  	bne-	syscall_exit_work
  	cmplw	0,r3,r8
  	blt+	syscall_exit_cont
-@@ -515,13 +517,13 @@ syscall_dotrace:
+@@ -515,13 +517,13 @@ END_FTR_SECTION_IFSET(CPU_FTR_NEED_PAIRE
  	b	syscall_dotrace_cont
  
  syscall_exit_work:
@@ -118,7 +118,7 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
  	bne-	1f
  	lwz	r11,_CCR(r1)			/* Load CR */
  	neg	r3,r3
-@@ -530,12 +532,12 @@ syscall_exit_work:
+@@ -530,12 +532,12 @@ END_FTR_SECTION_IFSET(CPU_FTR_NEED_PAIRE
  
  1:	stw	r6,RESULT(r1)	/* Save result */
  	stw	r3,GPR3(r1)	/* Update return value */
@@ -133,7 +133,7 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
  	addi	r12,r2,TI_FLAGS
  3:	lwarx	r8,0,r12
  	andc	r8,r8,r11
-@@ -898,7 +900,14 @@ resume_kernel:
+@@ -898,7 +900,14 @@ user_exc_return:		/* r10 contains MSR_KE
  	cmpwi	0,r0,0		/* if non-zero, just restore regs and return */
  	bne	restore_kuap
  	andi.	r8,r8,_TIF_NEED_RESCHED
@@ -148,7 +148,7 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
  	lwz	r3,_MSR(r1)
  	andi.	r0,r3,MSR_EE	/* interrupts off? */
  	beq	restore_kuap	/* don't schedule if so */
-@@ -1219,7 +1228,7 @@ global_dbcr0:
+@@ -1219,7 +1228,7 @@ END_FTR_SECTION_IFSET(CPU_FTR_NEED_PAIRE
  #endif /* !(CONFIG_4xx || CONFIG_BOOKE) */
  
  do_work:			/* r10 contains MSR_KERNEL here */
@@ -157,7 +157,7 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
  	beq	do_user_signal
  
  do_resched:			/* r10 contains MSR_KERNEL here */
-@@ -1240,7 +1249,7 @@ recheck:
+@@ -1240,7 +1249,7 @@ do_resched:			/* r10 contains MSR_KERNEL
  	SYNC
  	MTMSRD(r10)		/* disable interrupts */
  	lwz	r9,TI_FLAGS(r2)
@@ -168,7 +168,7 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
  	beq	restore_user
 --- a/arch/powerpc/kernel/entry_64.S
 +++ b/arch/powerpc/kernel/entry_64.S
-@@ -249,7 +249,9 @@ system_call_exit:
+@@ -249,7 +249,9 @@ system_call:			/* label this so stack tr
  
  	ld	r9,TI_FLAGS(r12)
  	li	r11,-MAX_ERRNO
@@ -209,7 +209,7 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
  	addi	r12,r12,TI_FLAGS
  3:	ldarx	r10,0,r12
  	andc	r10,r10,r11
-@@ -789,7 +791,7 @@ _GLOBAL(ret_from_except_lite)
+@@ -789,7 +791,7 @@ END_FTR_SECTION_IFCLR(CPU_FTR_ARCH_207S)
  	bl	restore_math
  	b	restore
  #endif
@@ -218,7 +218,7 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
  	beq	2f
  	bl	restore_interrupts
  	SCHEDULE_USER
-@@ -851,10 +853,18 @@ resume_kernel:
+@@ -851,10 +853,18 @@ END_FTR_SECTION_IFCLR(CPU_FTR_ARCH_207S)
  
  #ifdef CONFIG_PREEMPT
  	/* Check if we need to preempt */

@@ -42,7 +42,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  /*
   * We are using hashed locking: holding per_cpu(hrtimer_bases)[n].lock
   * means that all timers which are tied to this base via timer->base are
-@@ -264,6 +269,11 @@ again:
+@@ -264,6 +269,11 @@ switch_hrtimer_base(struct hrtimer *time
  
  #else /* CONFIG_SMP */
  

@@ -199,7 +199,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  }
  
  /**
-@@ -3122,12 +3116,11 @@ out:
+@@ -3122,12 +3116,11 @@ bool kmsg_dump_get_line_nolock(struct km
  bool kmsg_dump_get_line(struct kmsg_dumper *dumper, bool syslog,
  			char *line, size_t size, size_t *len)
  {

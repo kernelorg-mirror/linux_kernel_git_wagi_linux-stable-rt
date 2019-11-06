@@ -19,7 +19,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 
 --- a/drivers/gpu/drm/i915/gt/intel_breadcrumbs.c
 +++ b/drivers/gpu/drm/i915/gt/intel_breadcrumbs.c
-@@ -117,7 +117,6 @@ __dma_fence_signal__notify(struct dma_fe
+@@ -117,7 +117,6 @@ static void
  	struct dma_fence_cb *cur, *tmp;
  
  	lockdep_assert_held(fence->lock);

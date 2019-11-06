@@ -184,6 +184,35 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  obj-$(CONFIG_QUEUED_RWLOCKS) += qrwlock.o
  obj-$(CONFIG_LOCK_TORTURE_TEST) += locktorture.o
  obj-$(CONFIG_WW_MUTEX_SELFTEST) += test-ww_mutex.o
+--- a/kernel/locking/rwsem.c
++++ b/kernel/locking/rwsem.c
+@@ -31,6 +31,8 @@
+ #include "rwsem.h"
+ #include "lock_events.h"
+ 
++#ifndef CONFIG_PREEMPT_RT_FULL
++
+ /*
+  * The least significant 3 bits of the owner value has the following
+  * meanings when set.
+@@ -1452,6 +1454,17 @@ static inline void __downgrade_write(str
+ 		rwsem_downgrade_wake(sem);
+ }
+ 
++#else /* !PREEMPT_RT_FULL */
++
++static inline void __rwsem_set_reader_owned(struct rw_semaphore *sem,
++					    struct task_struct *owner)
++{
++}
++
++#define DEBUG_RWSEMS_WARN_ON(c, sem)
++
++#endif /* PREEMPT_RT_FULL */
++
+ /*
+  * lock for reading
+  */
 --- a/kernel/locking/spinlock.c
 +++ b/kernel/locking/spinlock.c
 @@ -124,8 +124,11 @@ void __lockfunc __raw_##op##_lock_bh(loc
@@ -248,32 +277,3 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  }
 +
 +#endif
---- a/kernel/locking/rwsem.c
-+++ b/kernel/locking/rwsem.c
-@@ -31,6 +31,8 @@
- #include "rwsem.h"
- #include "lock_events.h"
- 
-+#ifndef CONFIG_PREEMPT_RT_FULL
-+
- /*
-  * The least significant 3 bits of the owner value has the following
-  * meanings when set.
-@@ -1452,6 +1454,17 @@ static inline void __downgrade_write(str
- 		rwsem_downgrade_wake(sem);
- }
- 
-+#else /* !PREEMPT_RT_FULL */
-+
-+static inline void __rwsem_set_reader_owned(struct rw_semaphore *sem,
-+					    struct task_struct *owner)
-+{
-+}
-+
-+#define DEBUG_RWSEMS_WARN_ON(c, sem)
-+
-+#endif /* PREEMPT_RT_FULL */
-+
- /*
-  * lock for reading
-  */

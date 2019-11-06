@@ -35,7 +35,7 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
  extern void lru_cache_add_file(struct page *page);
 --- a/mm/compaction.c
 +++ b/mm/compaction.c
-@@ -2240,10 +2240,12 @@ check_drain:
+@@ -2240,10 +2240,12 @@ compact_zone(struct compact_control *cc,
  				block_start_pfn(cc->migrate_pfn, cc->order);
  
  			if (last_migrated_pfn < current_block_start) {
@@ -52,7 +52,7 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
  			}
 --- a/mm/page_alloc.c
 +++ b/mm/page_alloc.c
-@@ -7644,8 +7644,9 @@ void __init free_area_init(unsigned long
+@@ -7650,8 +7650,9 @@ void __init free_area_init(unsigned long
  
  static int page_alloc_cpu_dead(unsigned int cpu)
  {

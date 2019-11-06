@@ -30,7 +30,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  	rcu_read_lock();
  
  	fobj = rcu_dereference(resv->fence);
-@@ -223,7 +223,7 @@ retry:
+@@ -223,7 +223,7 @@ static __poll_t dma_buf_poll(struct file
  	else
  		shared_count = 0;
  	fence_excl = rcu_dereference(resv->fence_excl);
@@ -84,7 +84,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  
  	for (i = 0; i < count; ++i) {
  		struct dma_fence *old_fence;
-@@ -181,8 +178,7 @@ replace:
+@@ -181,8 +178,7 @@ void reservation_object_add_shared_fence
  	/* pointer update must be visible before we extend the shared_count */
  	smp_store_mb(fobj->shared_count, count);
  
@@ -111,7 +111,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  
  	/* inplace update, no shared fences */
  	while (i--)
-@@ -298,13 +291,10 @@ retry:
+@@ -298,13 +291,10 @@ int reservation_object_copy_fences(struc
  	src_list = reservation_object_get_list(dst);
  	old = reservation_object_get_excl(dst);
  
@@ -154,7 +154,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  	rcu_read_lock();
  	i = -1;
  
-@@ -490,7 +480,7 @@ retry:
+@@ -490,7 +480,7 @@ long reservation_object_wait_timeout_rcu
  
  	rcu_read_unlock();
  	if (fence) {
@@ -172,7 +172,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  
  	if (test_all) {
  		unsigned i;
-@@ -567,7 +557,7 @@ retry:
+@@ -567,7 +557,7 @@ bool reservation_object_test_signaled_rc
  				break;
  		}
  
@@ -181,7 +181,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  			goto retry;
  	}
  
-@@ -580,7 +570,7 @@ retry:
+@@ -580,7 +570,7 @@ bool reservation_object_test_signaled_rc
  			if (ret < 0)
  				goto retry;
  
@@ -206,26 +206,6 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  
  	/* Drop the references to the removed fences or move them to ef_list */
  	for (i = j, k = 0; i < old->shared_count; ++i) {
---- a/include/linux/reservation.h
-+++ b/include/linux/reservation.h
-@@ -71,7 +71,7 @@ struct reservation_object_list {
-  */
- struct reservation_object {
- 	struct ww_mutex lock;
--	seqcount_t seq;
-+	seqlock_t seq;
- 
- 	struct dma_fence __rcu *fence_excl;
- 	struct reservation_object_list __rcu *fence;
-@@ -90,7 +90,7 @@ reservation_object_init(struct reservati
- {
- 	ww_mutex_init(&obj->lock, &reservation_ww_class);
- 
--	__seqcount_init(&obj->seq, reservation_seqcount_string, &reservation_seqcount_class);
-+	seqlock_init(&obj->seq);
- 	RCU_INIT_POINTER(obj->fence, NULL);
- 	RCU_INIT_POINTER(obj->fence_excl, NULL);
- }
 --- a/drivers/gpu/drm/i915/gem/i915_gem_busy.c
 +++ b/drivers/gpu/drm/i915/gem/i915_gem_busy.c
 @@ -110,7 +110,7 @@ i915_gem_busy_ioctl(struct drm_device *d
@@ -237,7 +217,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  
  	/* Translate the exclusive fence to the READ *and* WRITE engine */
  	args->busy =
-@@ -129,7 +129,7 @@ retry:
+@@ -129,7 +129,7 @@ i915_gem_busy_ioctl(struct drm_device *d
  		}
  	}
  
@@ -269,3 +249,23 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  				reservation_object_add_excl_fence(resv, NULL);
  			reservation_object_unlock(resv);
  		}
+--- a/include/linux/reservation.h
++++ b/include/linux/reservation.h
+@@ -71,7 +71,7 @@ struct reservation_object_list {
+  */
+ struct reservation_object {
+ 	struct ww_mutex lock;
+-	seqcount_t seq;
++	seqlock_t seq;
+ 
+ 	struct dma_fence __rcu *fence_excl;
+ 	struct reservation_object_list __rcu *fence;
+@@ -90,7 +90,7 @@ reservation_object_init(struct reservati
+ {
+ 	ww_mutex_init(&obj->lock, &reservation_ww_class);
+ 
+-	__seqcount_init(&obj->seq, reservation_seqcount_string, &reservation_seqcount_class);
++	seqlock_init(&obj->seq);
+ 	RCU_INIT_POINTER(obj->fence, NULL);
+ 	RCU_INIT_POINTER(obj->fence_excl, NULL);
+ }

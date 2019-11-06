@@ -21,7 +21,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 
 --- a/kernel/cpu.c
 +++ b/kernel/cpu.c
-@@ -307,7 +307,9 @@ again:
+@@ -307,7 +307,9 @@ void pin_current_cpu(void)
  	cpu = smp_processor_id();
  	preempt_enable();
  

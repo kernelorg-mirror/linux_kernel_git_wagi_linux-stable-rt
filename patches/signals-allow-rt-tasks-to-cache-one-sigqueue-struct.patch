@@ -99,7 +99,7 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
  {
  	struct sigqueue *q = NULL;
  	struct user_struct *user;
-@@ -426,7 +444,10 @@ __sigqueue_alloc(int sig, struct task_st
+@@ -426,7 +444,10 @@ static struct sigqueue *
  	if (override_rlimit ||
  	    atomic_read(&user->sigpending) <=
  			task_rlimit(t, RLIMIT_SIGPENDING)) {
@@ -111,7 +111,7 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
  	} else {
  		print_dropped_signal(sig);
  	}
-@@ -443,6 +464,13 @@ __sigqueue_alloc(int sig, struct task_st
+@@ -443,6 +464,13 @@ static struct sigqueue *
  	return q;
  }
  
@@ -169,7 +169,7 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
   * Flush all pending signals for this kthread.
   */
  void flush_signals(struct task_struct *t)
-@@ -588,7 +646,7 @@ still_pending:
+@@ -588,7 +646,7 @@ static void collect_signal(int sig, stru
  			(info->si_code == SI_TIMER) &&
  			(info->si_sys_private);
  

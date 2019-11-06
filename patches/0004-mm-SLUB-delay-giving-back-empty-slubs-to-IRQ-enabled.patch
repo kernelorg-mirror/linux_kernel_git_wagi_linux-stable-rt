@@ -117,7 +117,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  	void *freelist;
  	struct page *page;
  
-@@ -2613,6 +2659,13 @@ load_freelist:
+@@ -2613,6 +2659,13 @@ static void *___slab_alloc(struct kmem_c
  	VM_BUG_ON(!c->page->frozen);
  	c->freelist = get_freepointer(s, freelist);
  	c->tid = next_tid(c->tid);
@@ -131,7 +131,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  	return freelist;
  
  new_slab:
-@@ -2628,7 +2681,7 @@ new_slab:
+@@ -2628,7 +2681,7 @@ static void *___slab_alloc(struct kmem_c
  
  	if (unlikely(!freelist)) {
  		slab_out_of_memory(s, gfpflags, node);
@@ -140,7 +140,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  	}
  
  	page = c->page;
-@@ -2641,7 +2694,7 @@ new_slab:
+@@ -2641,7 +2694,7 @@ static void *___slab_alloc(struct kmem_c
  		goto new_slab;	/* Slab failed checks. Next slab needed */
  
  	deactivate_slab(s, page, get_freepointer(s, freelist), c);

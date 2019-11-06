@@ -91,7 +91,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  /* insert record into the buffer, discard old ones, update heads */
  static int log_store(u32 caller_id, int facility, int level,
  		     enum log_flags flags, u64 ts_nsec, u16 cpu,
-@@ -1631,7 +1636,7 @@ out:
+@@ -1631,7 +1636,7 @@ static void printk_write_history(struct
   * The console_lock must be held.
   */
  static void call_console_drivers(u64 seq, const char *ext_text, size_t ext_len,

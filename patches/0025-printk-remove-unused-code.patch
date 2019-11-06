@@ -68,7 +68,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  
  int console_printk[5] = {
  	CONSOLE_LOGLEVEL_DEFAULT,	/* console_loglevel */
-@@ -356,41 +355,6 @@ __packed __aligned(4)
+@@ -356,41 +355,6 @@ struct printk_log {
  #endif
  ;
  

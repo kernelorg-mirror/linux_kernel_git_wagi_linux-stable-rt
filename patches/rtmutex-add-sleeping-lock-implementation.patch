@@ -407,7 +407,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  
  	return ret;
  }
-@@ -2878,7 +2879,7 @@ retry_private:
+@@ -2878,7 +2879,7 @@ static int futex_lock_pi(u32 __user *uad
  		goto no_block;
  	}
  
@@ -559,7 +559,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  			/*
  			 * The current top waiter stays enqueued. We
  			 * don't have to change anything in the lock
-@@ -927,6 +963,296 @@ takeit:
+@@ -927,6 +963,296 @@ static int try_to_take_rt_mutex(struct r
  	return 1;
  }
  

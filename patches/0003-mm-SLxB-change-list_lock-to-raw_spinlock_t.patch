@@ -314,7 +314,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  	if (n->shared) {
  		struct array_cache *shared_array = n->shared;
  		int max = shared_array->limit - shared_array->avail;
-@@ -3408,7 +3408,7 @@ free_done:
+@@ -3408,7 +3408,7 @@ static void cache_flusharray(struct kmem
  		STATS_SET_FREEABLE(cachep, i);
  	}
  #endif
@@ -387,7 +387,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  	slab_lock(page);
  
  	if (s->flags & SLAB_CONSISTENCY_CHECKS) {
-@@ -1210,7 +1210,7 @@ out:
+@@ -1210,7 +1210,7 @@ static noinline int free_debug_processin
  			 bulk_cnt, cnt);
  
  	slab_unlock(page);
@@ -414,7 +414,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  	return object;
  }
  
-@@ -2141,7 +2141,7 @@ redo:
+@@ -2141,7 +2141,7 @@ static void deactivate_slab(struct kmem_
  			 * that acquire_slab() will see a slab page that
  			 * is frozen
  			 */
@@ -423,7 +423,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  		}
  	} else {
  		m = M_FULL;
-@@ -2152,7 +2152,7 @@ redo:
+@@ -2152,7 +2152,7 @@ static void deactivate_slab(struct kmem_
  			 * slabs from diagnostic functions will not see
  			 * any frozen slabs.
  			 */
@@ -432,7 +432,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  		}
  	}
  
-@@ -2176,7 +2176,7 @@ redo:
+@@ -2176,7 +2176,7 @@ static void deactivate_slab(struct kmem_
  		goto redo;
  
  	if (lock)
@@ -503,7 +503,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  	return;
  
  slab_empty:
-@@ -2945,7 +2945,7 @@ slab_empty:
+@@ -2945,7 +2945,7 @@ static void __slab_free(struct kmem_cach
  		remove_full(s, n, page);
  	}
  

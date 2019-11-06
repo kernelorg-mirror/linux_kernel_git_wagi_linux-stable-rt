@@ -70,7 +70,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  {
  	int ret = 0;
  
-@@ -1542,6 +1578,12 @@ __rt_mutex_slowlock(struct rt_mutex *loc
+@@ -1542,6 +1578,12 @@ static int __sched
  			break;
  		}
  

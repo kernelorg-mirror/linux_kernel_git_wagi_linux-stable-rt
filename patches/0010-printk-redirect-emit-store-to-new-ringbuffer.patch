@@ -426,7 +426,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  	return printed_len;
  }
  EXPORT_SYMBOL(vprintk_emit);
-@@ -2484,7 +2261,7 @@ skip:
+@@ -2484,7 +2261,7 @@ void console_unlock(void)
  		console_lock_spinning_enable();
  
  		stop_critical_timings();	/* don't trace print latency */

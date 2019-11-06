@@ -234,7 +234,7 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
  	default PREEMPT_NONE
 --- a/kernel/cpu.c
 +++ b/kernel/cpu.c
-@@ -305,6 +305,7 @@ again:
+@@ -305,6 +305,7 @@ void pin_current_cpu(void)
  		return;
  	}
  	cpu = smp_processor_id();
@@ -242,7 +242,7 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
  	preempt_enable();
  
  	sleeping_lock_inc();
-@@ -312,6 +313,7 @@ again:
+@@ -312,6 +313,7 @@ void pin_current_cpu(void)
  	sleeping_lock_dec();
  
  	preempt_disable();

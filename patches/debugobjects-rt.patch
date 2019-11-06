@@ -11,7 +11,7 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 
 --- a/lib/debugobjects.c
 +++ b/lib/debugobjects.c
-@@ -533,7 +533,10 @@ __debug_object_init(void *addr, struct d
+@@ -533,7 +533,10 @@ static void
  	struct debug_obj *obj;
  	unsigned long flags;
  

@@ -38,7 +38,7 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
  
  	return 0;
  }
-@@ -142,6 +144,7 @@ do_local:
+@@ -142,6 +144,7 @@ void __blk_complete_request(struct reque
  		goto do_local;
  
  	local_irq_restore(flags);
@@ -127,7 +127,7 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
  }
  EXPORT_SYMBOL(__dev_kfree_skb_irq);
  
-@@ -4290,6 +4292,7 @@ drop:
+@@ -4290,6 +4292,7 @@ static int enqueue_to_backlog(struct sk_
  	rps_unlock(sd);
  
  	local_irq_restore(flags);

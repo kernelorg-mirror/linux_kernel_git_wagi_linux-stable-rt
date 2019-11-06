@@ -106,7 +106,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  
  	/* populate entry */
  	entry->offset = offset;
-@@ -1113,7 +1115,7 @@ insert_entry:
+@@ -1113,7 +1115,7 @@ static int zswap_frontswap_store(unsigne
  	return 0;
  
  put_dstmem:

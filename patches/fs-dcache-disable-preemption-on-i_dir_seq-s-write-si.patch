@@ -17,9 +17,8 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 ---
  fs/dcache.c        |   12 +++++++-----
  fs/inode.c         |    2 +-
- fs/libfs.c         |    6 ++++--
  include/linux/fs.h |    2 +-
- 4 files changed, 13 insertions(+), 9 deletions(-)
+ 3 files changed, 9 insertions(+), 7 deletions(-)
 
 --- a/fs/dcache.c
 +++ b/fs/dcache.c
@@ -55,7 +54,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  	r_seq = read_seqbegin(&rename_lock);
  	dentry = __d_lookup_rcu(parent, name, &d_seq);
  	if (unlikely(dentry)) {
-@@ -2553,7 +2555,7 @@ retry:
+@@ -2553,7 +2555,7 @@ struct dentry *d_alloc_parallel(struct d
  	}
  
  	hlist_bl_lock(b);
@@ -74,36 +73,6 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 +	inode->__i_dir_seq = 0;
  	inode->i_rdev = 0;
  	inode->dirtied_when = 0;
- 
---- a/fs/libfs.c
-+++ b/fs/libfs.c
-@@ -93,7 +93,7 @@ static struct dentry *next_positive(stru
- 				    struct list_head *from,
- 				    int count)
- {
--	unsigned *seq = &parent->d_inode->i_dir_seq, n;
-+	unsigned *seq = &parent->d_inode->__i_dir_seq, n;
- 	struct dentry *res;
- 	struct list_head *p;
- 	bool skipped;
-@@ -126,8 +126,9 @@ retry:
- static void move_cursor(struct dentry *cursor, struct list_head *after)
- {
- 	struct dentry *parent = cursor->d_parent;
--	unsigned n, *seq = &parent->d_inode->i_dir_seq;
-+	unsigned n, *seq = &parent->d_inode->__i_dir_seq;
- 	spin_lock(&parent->d_lock);
-+	preempt_disable_rt();
- 	for (;;) {
- 		n = *seq;
- 		if (!(n & 1) && cmpxchg(seq, n, n + 1) == n)
-@@ -140,6 +141,7 @@ static void move_cursor(struct dentry *c
- 	else
- 		list_add_tail(&cursor->d_child, &parent->d_subdirs);
- 	smp_store_release(seq, n + 2);
-+	preempt_enable_rt();
- 	spin_unlock(&parent->d_lock);
- }
  
 --- a/include/linux/fs.h
 +++ b/include/linux/fs.h

@@ -200,7 +200,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  				 lock, running, opt);
 --- a/net/core/gen_stats.c
 +++ b/net/core/gen_stats.c
-@@ -138,7 +138,7 @@ __gnet_stats_copy_basic_cpu(struct gnet_
+@@ -138,7 +138,7 @@ static void
  }
  
  void
@@ -209,7 +209,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  			struct gnet_stats_basic_packed *bstats,
  			struct gnet_stats_basic_cpu __percpu *cpu,
  			struct gnet_stats_basic_packed *b)
-@@ -151,15 +151,15 @@ __gnet_stats_copy_basic(const seqcount_t
+@@ -151,15 +151,15 @@ void
  	}
  	do {
  		if (running)
@@ -228,7 +228,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  			 struct gnet_dump *d,
  			 struct gnet_stats_basic_cpu __percpu *cpu,
  			 struct gnet_stats_basic_packed *b,
-@@ -200,7 +200,7 @@ ___gnet_stats_copy_basic(const seqcount_
+@@ -200,7 +200,7 @@ static int
   * if the room in the socket buffer was not sufficient.
   */
  int

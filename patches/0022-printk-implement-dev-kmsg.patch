@@ -35,7 +35,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  	return 0;
 --- a/include/linux/printk.h
 +++ b/include/linux/printk.h
-@@ -192,6 +192,7 @@ __printf(1, 2) void dump_stack_set_arch_
+@@ -192,6 +192,7 @@ void __init setup_log_buf(int early);
  void dump_stack_print_info(const char *log_lvl);
  void show_regs_print_info(const char *log_lvl);
  extern asmlinkage void dump_stack(void) __cold;
@@ -165,7 +165,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  out:
  	mutex_unlock(&user->lock);
  	return ret;
-@@ -814,19 +832,21 @@ out:
+@@ -814,19 +832,21 @@ static ssize_t devkmsg_read(struct file
  static loff_t devkmsg_llseek(struct file *file, loff_t offset, int whence)
  {
  	struct devkmsg_user *user = file->private_data;

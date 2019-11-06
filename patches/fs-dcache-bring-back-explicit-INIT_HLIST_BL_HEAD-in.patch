@@ -14,7 +14,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 
 --- a/fs/dcache.c
 +++ b/fs/dcache.c
-@@ -3139,6 +3139,8 @@ __setup("dhash_entries=", set_dhash_entr
+@@ -3139,6 +3139,8 @@ static int __init set_dhash_entries(char
  
  static void __init dcache_init_early(void)
  {

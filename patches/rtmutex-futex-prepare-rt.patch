@@ -15,7 +15,7 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 
 --- a/kernel/futex.c
 +++ b/kernel/futex.c
-@@ -2167,6 +2167,16 @@ retry_private:
+@@ -2167,6 +2167,16 @@ static int futex_requeue(u32 __user *uad
  				requeue_pi_wake_futex(this, &key2, hb2);
  				drop_count++;
  				continue;

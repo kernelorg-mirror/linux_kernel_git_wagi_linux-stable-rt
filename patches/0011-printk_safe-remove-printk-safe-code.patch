@@ -89,7 +89,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  #ifdef CONFIG_PRINTK
  asmlinkage __printf(5, 0)
  int vprintk_emit(int facility, int level,
-@@ -202,9 +190,6 @@ __printf(1, 2) void dump_stack_set_arch_
+@@ -202,9 +190,6 @@ void __init setup_log_buf(int early);
  void dump_stack_print_info(const char *log_lvl);
  void show_regs_print_info(const char *log_lvl);
  extern asmlinkage void dump_stack(void) __cold;
@@ -140,7 +140,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  		/*
 --- a/kernel/panic.c
 +++ b/kernel/panic.c
-@@ -228,7 +228,6 @@ void panic(const char *fmt, ...)
+@@ -229,7 +229,6 @@ void panic(const char *fmt, ...)
  	 * Bypass the panic_cpu check and call __crash_kexec directly.
  	 */
  	if (!_crash_kexec_post_notifiers) {
@@ -148,7 +148,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  		__crash_kexec(NULL);
  
  		/*
-@@ -252,8 +251,6 @@ void panic(const char *fmt, ...)
+@@ -253,8 +252,6 @@ void panic(const char *fmt, ...)
  	 */
  	atomic_notifier_call_chain(&panic_notifier_list, 0, buf);
  
@@ -199,7 +199,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  
  void defer_console_output(void);
  
-@@ -58,10 +32,10 @@ __printf(1, 0) int vprintk_func(const ch
+@@ -58,10 +32,10 @@ void defer_console_output(void);
   * semaphore and some of console functions (console_unlock()/etc.), so
   * printk-safe must preserve the existing local IRQ guarantees.
   */
@@ -666,7 +666,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 -}
 --- a/kernel/trace/trace.c
 +++ b/kernel/trace/trace.c
-@@ -8873,7 +8873,6 @@ void ftrace_dump(enum ftrace_dump_mode o
+@@ -8886,7 +8886,6 @@ void ftrace_dump(enum ftrace_dump_mode o
  	tracing_off();
  
  	local_irq_save(flags);
@@ -674,7 +674,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  
  	/* Simulate the iterator */
  	trace_init_global_iter(&iter);
-@@ -8950,7 +8949,6 @@ void ftrace_dump(enum ftrace_dump_mode o
+@@ -8963,7 +8962,6 @@ void ftrace_dump(enum ftrace_dump_mode o
  		atomic_dec(&per_cpu_ptr(iter.trace_buffer->data, cpu)->disabled);
  	}
  	atomic_dec(&dump_running);

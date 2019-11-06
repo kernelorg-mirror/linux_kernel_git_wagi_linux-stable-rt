@@ -57,7 +57,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  static u64 log_first_seq;
  static u32 log_first_idx;
  static u64 log_next_seq;
-@@ -2468,12 +2459,6 @@ skip:
+@@ -2468,12 +2459,6 @@ void console_unlock(void)
  			goto skip;
  		}
  

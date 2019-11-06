@@ -15,7 +15,7 @@ Signed-off-by: Daniel Wagner <dwagner@suse.de>
 
 --- a/mm/vmalloc.c
 +++ b/mm/vmalloc.c
-@@ -1091,11 +1091,11 @@ retry:
+@@ -1091,11 +1091,11 @@ static struct vmap_area *alloc_vmap_area
  	 * Even if it fails we do not really care about that. Just proceed
  	 * as it is. "overflow" path will refill the cache we allocate from.
  	 */
@@ -30,7 +30,7 @@ Signed-off-by: Daniel Wagner <dwagner@suse.de>
  
  		if (__this_cpu_cmpxchg(ne_fit_preload_node, NULL, pva)) {
  			if (pva)
-@@ -1104,7 +1104,7 @@ retry:
+@@ -1104,7 +1104,7 @@ static struct vmap_area *alloc_vmap_area
  	}
  
  	spin_lock(&vmap_area_lock);

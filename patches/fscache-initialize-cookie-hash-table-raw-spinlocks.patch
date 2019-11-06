@@ -19,7 +19,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 
 --- a/fs/fscache/cookie.c
 +++ b/fs/fscache/cookie.c
-@@ -958,3 +958,11 @@ inconsistent:
+@@ -958,3 +958,11 @@ int __fscache_check_consistency(struct f
  	return -ESTALE;
  }
  EXPORT_SYMBOL(__fscache_check_consistency);

@@ -29,7 +29,7 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
  
  static inline void dev_base_seq_inc(struct net *net)
  {
-@@ -920,7 +921,8 @@ retry:
+@@ -920,7 +921,8 @@ int netdev_get_name(struct net *net, cha
  	strcpy(name, dev->name);
  	rcu_read_unlock();
  	if (read_seqcount_retry(&devnet_rename_seq, seq)) {
@@ -66,7 +66,7 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
  
  	if (oldname[0] && !strchr(oldname, '%'))
  		netdev_info(dev, "renamed from %s\n", oldname);
-@@ -1223,11 +1222,12 @@ rollback:
+@@ -1223,11 +1222,12 @@ int dev_change_name(struct net_device *d
  	if (ret) {
  		memcpy(dev->name, oldname, IFNAMSIZ);
  		dev->name_assign_type = old_assign_type;
@@ -82,7 +82,7 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
  
  	netdev_adjacent_rename_links(dev, oldname);
  
-@@ -1248,7 +1248,8 @@ rollback:
+@@ -1248,7 +1248,8 @@ int dev_change_name(struct net_device *d
  		/* err >= 0 after dev_alloc_name() or stores the first errno */
  		if (err >= 0) {
  			err = ret;
@@ -92,7 +92,7 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
  			memcpy(dev->name, oldname, IFNAMSIZ);
  			memcpy(oldname, newname, IFNAMSIZ);
  			dev->name_assign_type = old_assign_type;
-@@ -1261,6 +1262,11 @@ rollback:
+@@ -1261,6 +1262,11 @@ int dev_change_name(struct net_device *d
  	}
  
  	return err;

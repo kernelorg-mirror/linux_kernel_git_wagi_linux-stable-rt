@@ -88,7 +88,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  
 --- a/kernel/time/itimer.c
 +++ b/kernel/time/itimer.c
-@@ -213,6 +213,7 @@ again:
+@@ -213,6 +213,7 @@ int do_setitimer(int which, struct itime
  		/* We are sharing ->siglock with it_real_fn() */
  		if (hrtimer_try_to_cancel(timer) < 0) {
  			spin_unlock_irq(&tsk->sighand->siglock);
@@ -190,7 +190,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  /* Set a POSIX.1b interval timer. */
  int common_timer_set(struct k_itimer *timr, int flags,
  		     struct itimerspec64 *new_setting,
-@@ -870,11 +881,15 @@ retry:
+@@ -870,11 +881,15 @@ static int do_timer_settime(timer_t time
  	else
  		error = kc->timer_set(timr, flags, new_spec64, old_spec64);
  
@@ -231,7 +231,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  }
  
  /* Delete a POSIX.1b interval timer. */
-@@ -956,10 +979,8 @@ retry_delete:
+@@ -956,10 +979,8 @@ SYSCALL_DEFINE1(timer_delete, timer_t, t
  	if (!timer)
  		return -EINVAL;
  

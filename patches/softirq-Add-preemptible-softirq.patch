@@ -246,7 +246,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  	in_hardirq = lockdep_softirq_start();
  
  restart:
-@@ -300,9 +400,10 @@ restart:
+@@ -300,9 +400,10 @@ asmlinkage __visible void __softirq_entr
  		h++;
  		pending >>= softirq_bit;
  	}
@@ -258,7 +258,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  	local_irq_disable();
  
  	pending = local_softirq_pending();
-@@ -316,11 +417,16 @@ restart:
+@@ -316,11 +417,16 @@ asmlinkage __visible void __softirq_entr
  
  	lockdep_softirq_end(in_hardirq);
  	account_irq_exit_time(current);
