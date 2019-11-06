@@ -1,0 +1,41 @@
+From befe9cd29e59f8c48811872dfe61631195ffc8c2 Mon Sep 17 00:00:00 2001
+From: Daniel Wagner <dwagner@suse.de>
+Date: Wed, 2 Oct 2019 17:05:15 +0200
+Subject: [PATCH] mm: vmalloc: Disable migration instead preemption
+
+Replace preempt_enable() and preempt_disable() with migrate_enable()
+and migrate_disable(). On -rt it is not allowed to be in a
+preempt_disable() section when calling spin_lock().
+
+Signed-off-by: Daniel Wagner <dwagner@suse.de>
+
+---
+ mm/vmalloc.c |    8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+--- a/mm/vmalloc.c
++++ b/mm/vmalloc.c
+@@ -1091,11 +1091,11 @@ retry:
+ 	 * Even if it fails we do not really care about that. Just proceed
+ 	 * as it is. "overflow" path will refill the cache we allocate from.
+ 	 */
+-	preempt_disable();
++	migrate_disable();
+ 	if (!__this_cpu_read(ne_fit_preload_node)) {
+-		preempt_enable();
++		migrate_enable();
+ 		pva = kmem_cache_alloc_node(vmap_area_cachep, GFP_KERNEL, node);
+-		preempt_disable();
++		migrate_disable();
+ 
+ 		if (__this_cpu_cmpxchg(ne_fit_preload_node, NULL, pva)) {
+ 			if (pva)
+@@ -1104,7 +1104,7 @@ retry:
+ 	}
+ 
+ 	spin_lock(&vmap_area_lock);
+-	preempt_enable();
++	migrate_enable();
+ 
+ 	/*
+ 	 * If an allocation fails, the "vend" address is

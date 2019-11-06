@@ -1,0 +1,13 @@
+Subject: Add localversion for -RT release
+From: Daniel Wagner <dwagner@suse.de>
+Date: Wed, 06 Nov 2019 13:25:16 +0100
+
+Signed-off-by: Daniel Wagner <dwagern@suse.de>
+---
+ localversion-rt |    1 +
+ 1 file changed, 1 insertion(+)
+
+--- /dev/null
++++ b/localversion-rt
+@@ -0,0 +1 @@
++-rt4
