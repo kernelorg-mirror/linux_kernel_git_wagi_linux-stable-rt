@@ -434,7 +434,7 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
  		return;
  	}
  	/*
-@@ -4477,7 +4477,7 @@ static void __account_cfs_rq_runtime(str
+@@ -4425,7 +4425,7 @@ static void __account_cfs_rq_runtime(str
  	 * hierarchy can be throttled
  	 */
  	if (!assign_cfs_rq_runtime(cfs_rq) && likely(cfs_rq->curr))
@@ -443,7 +443,7 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
  }
  
  static __always_inline
-@@ -5197,7 +5197,7 @@ static void hrtick_start_fair(struct rq
+@@ -5140,7 +5140,7 @@ static void hrtick_start_fair(struct rq
  
  		if (delta < 0) {
  			if (rq->curr == p)
@@ -452,7 +452,7 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
  			return;
  		}
  		hrtick_start(rq, delta);
-@@ -6771,7 +6771,7 @@ static void check_preempt_wakeup(struct
+@@ -6714,7 +6714,7 @@ static void check_preempt_wakeup(struct
  	return;
  
  preempt:
@@ -461,7 +461,7 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
  	/*
  	 * Only set the backward buddy when the current task is still
  	 * on the rq. This can happen when a wakeup gets interleaved
-@@ -10014,7 +10014,7 @@ static void task_fork_fair(struct task_s
+@@ -9957,7 +9957,7 @@ static void task_fork_fair(struct task_s
  		 * 'current' within the tree based on its new key value.
  		 */
  		swap(curr->vruntime, se->vruntime);
@@ -470,7 +470,7 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
  	}
  
  	se->vruntime -= cfs_rq->min_vruntime;
-@@ -10038,7 +10038,7 @@ prio_changed_fair(struct rq *rq, struct
+@@ -9981,7 +9981,7 @@ prio_changed_fair(struct rq *rq, struct
  	 */
  	if (rq->curr == p) {
  		if (p->prio > oldprio)
@@ -493,7 +493,7 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
  /*
 --- a/kernel/sched/sched.h
 +++ b/kernel/sched/sched.h
-@@ -1829,6 +1829,15 @@ extern void reweight_task(struct task_st
+@@ -1825,6 +1825,15 @@ extern void reweight_task(struct task_st
  extern void resched_curr(struct rq *rq);
  extern void resched_cpu(int cpu);
  
