@@ -10,4 +10,4 @@ Signed-off-by: Daniel Wagner <dwagern@suse.de>
 --- /dev/null
 +++ b/localversion-rt
 @@ -0,0 +1 @@
-+-rt7
++-rt8
