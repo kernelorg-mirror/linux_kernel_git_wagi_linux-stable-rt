@@ -111,7 +111,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  #include <linux/refcount.h>
  #include <linux/workqueue.h>
  #include <linux/mutex.h>
-@@ -100,7 +101,7 @@ struct Qdisc {
+@@ -101,7 +102,7 @@ struct Qdisc {
  	struct sk_buff_head	gso_skb ____cacheline_aligned_in_smp;
  	struct qdisc_skb_head	q;
  	struct gnet_stats_basic_packed bstats;
@@ -120,7 +120,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  	struct gnet_stats_queue	qstats;
  	unsigned long		state;
  	struct Qdisc            *next_sched;
-@@ -138,7 +139,11 @@ static inline bool qdisc_is_running(stru
+@@ -139,7 +140,11 @@ static inline bool qdisc_is_running(stru
  {
  	if (qdisc->flags & TCQ_F_NOLOCK)
  		return spin_is_locked(&qdisc->seqlock);
@@ -132,7 +132,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  }
  
  static inline bool qdisc_is_percpu_stats(const struct Qdisc *q)
-@@ -162,17 +167,27 @@ static inline bool qdisc_run_begin(struc
+@@ -163,17 +168,27 @@ static inline bool qdisc_run_begin(struc
  	} else if (qdisc_is_running(qdisc)) {
  		return false;
  	}
@@ -160,7 +160,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  	if (qdisc->flags & TCQ_F_NOLOCK)
  		spin_unlock(&qdisc->seqlock);
  }
-@@ -557,7 +572,7 @@ static inline spinlock_t *qdisc_root_sle
+@@ -561,7 +576,7 @@ static inline spinlock_t *qdisc_root_sle
  	return qdisc_lock(root);
  }
  

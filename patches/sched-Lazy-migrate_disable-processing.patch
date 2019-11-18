@@ -41,7 +41,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 
 --- a/include/linux/cpu.h
 +++ b/include/linux/cpu.h
-@@ -113,8 +113,6 @@ extern void cpu_hotplug_disable(void);
+@@ -118,8 +118,6 @@ extern void cpu_hotplug_disable(void);
  extern void cpu_hotplug_enable(void);
  void clear_tasks_mm_cpumask(int cpu);
  int cpu_down(unsigned int cpu);
@@ -50,7 +50,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  
  #else /* CONFIG_HOTPLUG_CPU */
  
-@@ -126,8 +124,6 @@ static inline int  cpus_read_trylock(voi
+@@ -131,8 +129,6 @@ static inline int  cpus_read_trylock(voi
  static inline void lockdep_assert_cpus_held(void) { }
  static inline void cpu_hotplug_disable(void) { }
  static inline void cpu_hotplug_enable(void) { }
