@@ -36,8 +36,8 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  kernel/cpu.c           |  103 ++++++++++------------------
  kernel/sched/core.c    |  180 +++++++++++++++++++------------------------------
  kernel/sched/sched.h   |    4 +
- lib/smp_processor_id.c |    3 
- 7 files changed, 128 insertions(+), 181 deletions(-)
+ lib/smp_processor_id.c |    5 +
+ 7 files changed, 130 insertions(+), 181 deletions(-)
 
 --- a/include/linux/cpu.h
 +++ b/include/linux/cpu.h
@@ -579,12 +579,14 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  #ifdef CONFIG_FAIR_GROUP_SCHED
 --- a/lib/smp_processor_id.c
 +++ b/lib/smp_processor_id.c
-@@ -23,6 +23,9 @@ unsigned int check_preemption_disabled(c
+@@ -23,6 +23,11 @@ unsigned int check_preemption_disabled(c
  	 * Kernel threads bound to a single CPU can safely use
  	 * smp_processor_id():
  	 */
++#if defined(CONFIG_SMP) && defined(CONFIG_PREEMPT_RT_BASE)
 +	if (current->migrate_disable)
 +		goto out;
++#endif
 +
  	if (current->nr_cpus_allowed == 1)
  		goto out;
