@@ -47,7 +47,7 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
  #ifdef ARCH_RT_DELAYS_SIGNAL_SEND
 --- a/arch/x86/entry/entry_32.S
 +++ b/arch/x86/entry/entry_32.S
-@@ -1086,8 +1086,25 @@ ENTRY(entry_INT80_32)
+@@ -1106,8 +1106,25 @@ ENTRY(entry_INT80_32)
  restore_all_kernel:
  #ifdef CONFIG_PREEMPT
  	DISABLE_INTERRUPTS(CLBR_ANY)
