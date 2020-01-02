@@ -370,7 +370,7 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
  	do {
  		/*
  		 * Because the function tracer can trace preempt_count_sub()
-@@ -6006,7 +6080,9 @@ void init_idle(struct task_struct *idle,
+@@ -6007,7 +6081,9 @@ void init_idle(struct task_struct *idle,
  
  	/* Set the preempt count _outside_ the spinlocks! */
  	init_idle_preempt_count(idle, cpu);
@@ -381,7 +381,7 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
  	/*
  	 * The idle tasks have their own, simple scheduling class:
  	 */
-@@ -7754,6 +7830,7 @@ void migrate_disable(void)
+@@ -7755,6 +7831,7 @@ void migrate_disable(void)
  	}
  
  	preempt_disable();
@@ -389,7 +389,7 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
  	pin_current_cpu();
  
  	migrate_disable_update_cpus_allowed(p);
-@@ -7821,6 +7898,7 @@ void migrate_enable(void)
+@@ -7822,6 +7899,7 @@ void migrate_enable(void)
  			arg.dest_cpu = dest_cpu;
  
  			unpin_current_cpu();
@@ -397,7 +397,7 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
  			preempt_enable();
  
  			sleeping_lock_inc();
-@@ -7830,6 +7908,7 @@ void migrate_enable(void)
+@@ -7831,6 +7909,7 @@ void migrate_enable(void)
  		}
  	}
  	unpin_current_cpu();
@@ -461,7 +461,7 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
  	/*
  	 * Only set the backward buddy when the current task is still
  	 * on the rq. This can happen when a wakeup gets interleaved
-@@ -9957,7 +9957,7 @@ static void task_fork_fair(struct task_s
+@@ -9968,7 +9968,7 @@ static void task_fork_fair(struct task_s
  		 * 'current' within the tree based on its new key value.
  		 */
  		swap(curr->vruntime, se->vruntime);
@@ -470,7 +470,7 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
  	}
  
  	se->vruntime -= cfs_rq->min_vruntime;
-@@ -9981,7 +9981,7 @@ prio_changed_fair(struct rq *rq, struct
+@@ -9992,7 +9992,7 @@ prio_changed_fair(struct rq *rq, struct
  	 */
  	if (rq->curr == p) {
  		if (p->prio > oldprio)

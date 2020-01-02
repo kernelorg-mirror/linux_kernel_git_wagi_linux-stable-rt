@@ -337,7 +337,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  	/* Promote REQ to ACT */
  	rq->clock_update_flags <<= 1;
  	update_rq_clock(rq);
-@@ -6291,6 +6283,8 @@ static void migrate_tasks(struct rq *dea
+@@ -6292,6 +6284,8 @@ static void migrate_tasks(struct rq *dea
  		BUG_ON(!next);
  		put_prev_task(rq, next);
  
@@ -346,7 +346,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  		/*
  		 * Rules for changing task_struct::cpus_mask are holding
  		 * both pi_lock and rq->lock, such that holding either
-@@ -7784,14 +7778,9 @@ update_nr_migratory(struct task_struct *
+@@ -7785,14 +7779,9 @@ update_nr_migratory(struct task_struct *
  static inline void
  migrate_disable_update_cpus_allowed(struct task_struct *p)
  {
@@ -361,7 +361,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  }
  
  static inline void
-@@ -7809,54 +7798,35 @@ migrate_enable_update_cpus_allowed(struc
+@@ -7810,54 +7799,35 @@ migrate_enable_update_cpus_allowed(struc
  
  void migrate_disable(void)
  {
@@ -432,7 +432,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  
  	WARN_ON_ONCE(p->migrate_disable <= 0);
  	if (p->migrate_disable > 1) {
-@@ -7866,65 +7836,67 @@ void migrate_enable(void)
+@@ -7867,65 +7837,67 @@ void migrate_enable(void)
  
  	preempt_disable();
  
@@ -539,7 +539,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  #endif
  	barrier();
  }
-@@ -7935,20 +7907,14 @@ void migrate_enable(void)
+@@ -7936,20 +7908,14 @@ void migrate_enable(void)
  #ifdef CONFIG_SCHED_DEBUG
  	struct task_struct *p = current;
  

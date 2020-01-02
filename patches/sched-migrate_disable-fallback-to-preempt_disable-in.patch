@@ -107,7 +107,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  	if (__migrate_disabled(p)) {
  		lockdep_assert_held(&p->pi_lock);
  
-@@ -7690,7 +7690,7 @@ const u32 sched_prio_to_wmult[40] = {
+@@ -7691,7 +7691,7 @@ const u32 sched_prio_to_wmult[40] = {
  
  #undef CREATE_TRACE_POINTS
  
@@ -116,7 +116,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  
  static inline void
  update_nr_migratory(struct task_struct *p, long delta)
-@@ -7834,45 +7834,44 @@ EXPORT_SYMBOL(migrate_enable);
+@@ -7835,45 +7835,44 @@ EXPORT_SYMBOL(migrate_enable);
  #elif !defined(CONFIG_SMP) && defined(CONFIG_PREEMPT_RT_BASE)
  void migrate_disable(void)
  {

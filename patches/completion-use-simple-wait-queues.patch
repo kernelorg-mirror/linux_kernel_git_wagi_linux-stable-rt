@@ -299,7 +299,7 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
  EXPORT_SYMBOL(completion_done);
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
-@@ -7627,7 +7627,10 @@ void migrate_disable(void)
+@@ -7628,7 +7628,10 @@ void migrate_disable(void)
  		return;
  	}
  #ifdef CONFIG_SCHED_DEBUG
@@ -311,7 +311,7 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
  #endif
  
  	if (p->migrate_disable) {
-@@ -7657,7 +7660,10 @@ void migrate_enable(void)
+@@ -7658,7 +7661,10 @@ void migrate_enable(void)
  	}
  
  #ifdef CONFIG_SCHED_DEBUG

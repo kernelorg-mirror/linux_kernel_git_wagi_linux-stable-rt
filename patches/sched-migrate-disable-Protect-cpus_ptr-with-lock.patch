@@ -13,7 +13,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
-@@ -7675,9 +7675,8 @@ migrate_disable_update_cpus_allowed(stru
+@@ -7676,9 +7676,8 @@ migrate_disable_update_cpus_allowed(stru
  	struct rq *rq;
  	struct rq_flags rf;
  
@@ -24,7 +24,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  	update_nr_migratory(p, -1);
  	p->nr_cpus_allowed = 1;
  	task_rq_unlock(rq, p, &rf);
-@@ -7689,9 +7688,8 @@ migrate_enable_update_cpus_allowed(struc
+@@ -7690,9 +7689,8 @@ migrate_enable_update_cpus_allowed(struc
  	struct rq *rq;
  	struct rq_flags rf;
  

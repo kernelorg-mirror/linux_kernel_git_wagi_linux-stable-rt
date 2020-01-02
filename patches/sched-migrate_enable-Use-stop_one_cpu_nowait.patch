@@ -61,7 +61,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  	}
  	rq_unlock(rq, &rf);
  	raw_spin_unlock(&p->pi_lock);
-@@ -7859,6 +7865,7 @@ void migrate_enable(void)
+@@ -7860,6 +7866,7 @@ void migrate_enable(void)
  	WARN_ON(smp_processor_id() != cpu);
  	if (!is_cpu_allowed(p, cpu)) {
  		struct migration_arg arg = { p };
@@ -69,7 +69,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  		struct rq_flags rf;
  
  		rq = task_rq_lock(p, &rf);
-@@ -7866,13 +7873,10 @@ void migrate_enable(void)
+@@ -7867,13 +7874,10 @@ void migrate_enable(void)
  		arg.dest_cpu = select_fallback_rq(cpu, p);
  		task_rq_unlock(rq, p, &rf);
  

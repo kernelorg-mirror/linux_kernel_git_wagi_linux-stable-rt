@@ -15,7 +15,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
-@@ -7872,6 +7872,7 @@ void migrate_enable(void)
+@@ -7873,6 +7873,7 @@ void migrate_enable(void)
  	if (p->migrate_disable_update) {
  		struct rq *rq;
  		struct rq_flags rf;
@@ -23,7 +23,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  
  		rq = task_rq_lock(p, &rf);
  		update_rq_clock(rq);
-@@ -7881,21 +7882,15 @@ void migrate_enable(void)
+@@ -7882,21 +7883,15 @@ void migrate_enable(void)
  
  		p->migrate_disable_update = 0;
  

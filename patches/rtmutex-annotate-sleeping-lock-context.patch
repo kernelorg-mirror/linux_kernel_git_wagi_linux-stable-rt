@@ -241,7 +241,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
-@@ -7830,4 +7830,49 @@ void migrate_enable(void)
+@@ -7831,4 +7831,49 @@ void migrate_enable(void)
  	preempt_enable();
  }
  EXPORT_SYMBOL(migrate_enable);
